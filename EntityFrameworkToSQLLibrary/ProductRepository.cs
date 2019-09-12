@@ -43,7 +43,7 @@ namespace EntityFrameworkToSQLLibrary {
             context.Products.Remove(dbproduct);
             return context.SaveChanges() == 1;
         }
-        public static bool Insert(int id) {
+        public static bool Delete(int id) {
             var product = context.Products.Find(id);
             if (product == null) { return false; }
             var rc = Delete(product);

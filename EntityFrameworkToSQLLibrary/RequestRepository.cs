@@ -10,6 +10,13 @@ namespace EntityFrameworkToSQLLibrary {
 
         private static PRSdbContext context = new PRSdbContext();
 
+        public static string RequestNew = "NEW";
+        public static string RequestEdit = "EDIT";
+        public static string RequestReview = "REVIEW";
+        public static string RequestApproved = "APPROVED";
+        public static string RequestRejected = "REJECTED";
+
+
         public static List<Requests> GetAll() {
             return context.Requests.ToList();
         }
@@ -44,11 +51,33 @@ namespace EntityFrameworkToSQLLibrary {
             context.Requests.Remove(dbrequest);
             return context.SaveChanges() == 1;
         }
-        public static bool Insert(int id) {
+        public static bool Delete(int id) {
             var request = context.Requests.Find(id);
             if (request == null) { return false; }
             var rc = Delete(request);
             return rc;
+        }
+        public static void Review(int id) {
+            SetStatus(id, RequestReview);
+        }
+        public static void Approve(int id) {
+            SetStatus(id, RequestApproved);
+        }
+        public static void Reject(int id) {
+            SetStatus(id, RequestRejected);
+        }
+        public static void Edit(int id) {
+            SetStatus(id, RequestRejected);
+        }
+        public static void New(int id) {
+            SetStatus(id, RequestRejected);
+        }
+        public static void SetStatus(int id, string status) {
+            var request = GetByPK(id);
+            request.Status = status;
+            if (request == null) { throw new Exception("No request with that id"); }
+            var success = Update(request);
+            if(!success) { throw new Exception("Request update failed!"); }
         }
     }
 }

@@ -45,7 +45,7 @@ namespace EntityFrameworkToSQLLibrary {
             context.Vendors.Remove(dbvendor);
             return context.SaveChanges() == 1;
         }
-        public static bool Insert(int id) {
+        public static bool Delete(int id) {
             var vendor = context.Vendors.Find(id);
             if (vendor == null) { return false; }
             var rc = Delete(vendor);

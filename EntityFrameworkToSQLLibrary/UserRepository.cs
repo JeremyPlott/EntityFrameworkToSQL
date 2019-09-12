@@ -46,7 +46,7 @@ namespace EntityFrameworkToSQLLibrary {
             context.Users.Remove(dbuser);
             return context.SaveChanges() == 1;
         }
-        public static bool Insert(int id) {
+        public static bool Delete(int id) {
             var user = context.Users.Find(id);
             if(user == null) { return false; }
             var rc = Delete(user);

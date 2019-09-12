@@ -10,6 +10,12 @@ namespace EntityFrameworkToSQLLibrary {
 
         private static PRSdbContext context = new PRSdbContext();
 
+        private static void RecalcReqTotal(int requestId) {
+            var request = RequestRepository.GetByPK(requestId);
+            request.Total = request.RequestLines.Sum(l => l.Product.Price * l.Quantity);
+            // save changes is after this code in Insert, Update, Delete
+        }
+
         public static List<RequestLines> GetAll() {
             return context.RequestLines.ToList();
         }
@@ -21,6 +27,7 @@ namespace EntityFrameworkToSQLLibrary {
             if (requestline == null) { throw new Exception("RequestLine instance must not be null"); }
             requestline.Id = 0;
             context.RequestLines.Add(requestline);
+            RecalcReqTotal(requestline.Id);
             return context.SaveChanges() == 1;
         }
         public static bool Update(RequestLines requestline) {
@@ -30,6 +37,8 @@ namespace EntityFrameworkToSQLLibrary {
             dbrequestline.Id = requestline.Id;
             dbrequestline.RequestId = requestline.RequestId;
             dbrequestline.ProductId = requestline.ProductId;
+            dbrequestline.Quantity = requestline.Quantity;
+            RecalcReqTotal(requestline.Id);
             return context.SaveChanges() == 1;
         }
         public static bool Delete(RequestLines requestline) {
@@ -37,9 +46,10 @@ namespace EntityFrameworkToSQLLibrary {
             var dbrequestline = context.RequestLines.Find(requestline.Id);
             if (dbrequestline == null) { throw new Exception("RequestLine not found"); }
             context.RequestLines.Remove(dbrequestline);
+            RecalcReqTotal(requestline.Id);
             return context.SaveChanges() == 1;
         }
-        public static bool Insert(int id) {
+        public static bool Delete(int id) {
             var requestline = context.RequestLines.Find(id);
             if (requestline == null) { return false; }
             var rc = Delete(requestline);

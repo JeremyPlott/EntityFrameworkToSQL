@@ -2,6 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
+// after installing EF packages, detailed in another file in this repo
+// PM console commands to create db:
+// add-migration initialcreate
+// update-database
+
 namespace EntityFrameworkToSQL
 {
     public partial class PRSdbContext : DbContext
